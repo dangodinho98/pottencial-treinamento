@@ -1,12 +1,12 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Pottencial.Invoices.Borders.Invoices.Entities;
 using Pottencial.Invoices.Borders.Invoices.Exceptions;
 using Pottencial.Invoices.Borders.Invoices.Requests;
 using Pottencial.Invoices.UseCases.Invoices.UseCases;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Pottencial.Invoices.Api.Controllers
 {
@@ -17,9 +17,7 @@ namespace Pottencial.Invoices.Api.Controllers
         private readonly InvoiceUseCases _useCases;
         private readonly ILogger<InvoiceController> _logger;
 
-        public InvoiceController(
-            InvoiceUseCases useCases,
-            ILogger<InvoiceController> logger)
+        public InvoiceController(InvoiceUseCases useCases, ILogger<InvoiceController> logger)
         {
             _useCases = useCases;
             _logger = logger;
@@ -70,7 +68,7 @@ namespace Pottencial.Invoices.Api.Controllers
                 var request = new GetInvoiceByNumber { Number = number };
 
                 var invoice = await _useCases.Invoke<Invoice>(request);
-            
+
                 return Ok(invoice);
             }
             catch (InvoiceNotFoundException ex)
