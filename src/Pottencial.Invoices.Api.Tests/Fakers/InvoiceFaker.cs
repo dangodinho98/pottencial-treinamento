@@ -27,7 +27,6 @@ namespace Pottencial.Invoices.Api.Tests.Fakers
                     {
                         item.Number = number++;
                         item.Amount = item.Quantity * item.UnitPrice;
-                        invoice.Amount += item.Amount;
                     }
                 })
                 .Generate();

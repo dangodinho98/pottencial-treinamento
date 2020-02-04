@@ -1,9 +1,9 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Pottencial.Invoices.Borders.Invoices.Entities;
 using Pottencial.Invoices.Repositories.Invoices.Context;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Pottencial.Invoices.Repositories.Invoices.Repositories
 {
@@ -21,9 +21,7 @@ namespace Pottencial.Invoices.Repositories.Invoices.Repositories
                 .Where(x => x.Status != Status.Cancelled);
 
             if (!string.IsNullOrWhiteSpace(customer))
-            {
                 invoices = invoices.Where(x => x.Customer.StartsWith(customer));
-            }
 
             return await invoices
                 .OrderByDescending(x => x.Date)
@@ -37,11 +35,6 @@ namespace Pottencial.Invoices.Repositories.Invoices.Repositories
             return await Context.Set<Invoice>()
                 .Include(x => x.Items)
                 .FirstOrDefaultAsync(x => x.Number == number);
-        }
-
-        public override Task Delete(Invoice entity)
-        {
-            throw new InvalidOperationException("Cannot delete a invoice. Cancel it instead.");
         }
     }
 }

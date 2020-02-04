@@ -8,7 +8,6 @@ namespace Pottencial.Invoices.Api.Configuration
         public static void ConfigureUseCases(this IServiceCollection services)
         {
             services
-            .AddScoped<InvoiceUseCases>()
             .AddScoped<CancelInvoiceUseCase>()
             .AddScoped<ChangeInvoiceUseCase>()
             .AddScoped<CreateInvoiceUseCase>()

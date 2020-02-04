@@ -9,9 +9,8 @@ namespace Pottencial.Invoices.Api.Configuration
     {
         public static void ConfigureRepositories(this IServiceCollection services)
         {
-            services
-                   .AddScoped<InvoiceRepository>()
-                   .AddDbContext<InvoiceDbContext>(options => options.UseInMemoryDatabase("Invoices"));
+            services.AddDbContext<InvoiceDbContext>(options => options.UseInMemoryDatabase("Invoices"));
+            services.AddScoped<InvoiceRepository>();
         }
     }
 }

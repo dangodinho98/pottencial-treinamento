@@ -25,18 +25,13 @@ namespace Pottencial.Invoices.UseCases.Invoices.UseCases
             var existing = await _repository.GetByNumber(invoice?.Number ?? 0);
 
             if (existing == null)
-            {
                 throw new InvoiceNotFoundException(invoice.Number);
-            }
 
             if (existing.Status != Status.Created)
-            {
                 throw new InvalidInvoiceOperationException(invoice.Number, "Change");
-            }
 
             existing.Date = invoice.Date;
             existing.Customer = invoice.Customer;
-            existing.Amount = invoice.Amount;
 
             if (invoice.Items != null)
             {
@@ -54,6 +49,13 @@ namespace Pottencial.Invoices.UseCases.Invoices.UseCases
                 }
             }
 
+            ValidateAndThrow(invoice);
+
+            await _repository.Update(existing);
+        }
+
+        private static void ValidateAndThrow(Invoice invoice)
+        {
             var errors = new List<string>();
 
             if (invoice.Date > DateTime.Today)
@@ -70,17 +72,13 @@ namespace Pottencial.Invoices.UseCases.Invoices.UseCases
             {
                 errors.Add("Invoice amount must be greater than or equal to 0");
             }
-            else if (invoice.Amount != (invoice.Items ?? Enumerable.Empty<Item>()).Sum(x => x.Amount))
-            {
-                errors.Add("Invoice amount must be equal to the sum of items amount");
-            }
 
             if (string.IsNullOrWhiteSpace(invoice.Customer))
             {
                 errors.Add("Invoice customer must not be null or empty");
             }
 
-            if (invoice.Items == null || invoice.Items.Count == 0)
+            if (!invoice.Items.Any())
             {
                 errors.Add("Invoice status must have at least one item");
             }
@@ -93,7 +91,6 @@ namespace Pottencial.Invoices.UseCases.Invoices.UseCases
                     if (x.Number != a)
                     {
                         errors.Add($"Invoice item with number {a} not found");
-
                         break;
                     }
 
@@ -135,12 +132,10 @@ namespace Pottencial.Invoices.UseCases.Invoices.UseCases
                 }
             }
 
-            if (errors.Count > 0)
+            if (errors.Any())
             {
                 throw new InvalidInvoiceException(errors);
             }
-
-            await _repository.Update(existing);
         }
     }
 }

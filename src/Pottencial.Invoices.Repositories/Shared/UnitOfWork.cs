@@ -24,11 +24,8 @@ namespace Pottencial.Invoices.Repositories.Shared
 
         public void Dispose()
         {
-            if (transactionScope != null)
-            {
-                transactionScope.Dispose();
-                transactionScope = null;
-            }
+            transactionScope?.Dispose();
+            transactionScope = null;
         }
     }
 }

@@ -1,8 +1,8 @@
-﻿using System.Threading.Tasks;
-using Pottencial.Invoices.Borders.Invoices.Entities;
+﻿using Pottencial.Invoices.Borders.Invoices.Entities;
 using Pottencial.Invoices.Borders.Invoices.Exceptions;
 using Pottencial.Invoices.Borders.Invoices.Requests;
 using Pottencial.Invoices.Repositories.Invoices.Repositories;
+using System.Threading.Tasks;
 
 namespace Pottencial.Invoices.UseCases.Invoices.UseCases
 {

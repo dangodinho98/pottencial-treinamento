@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Pottencial.Invoices.Borders.Invoices.Entities;
+﻿using Pottencial.Invoices.Borders.Invoices.Entities;
 using Pottencial.Invoices.Borders.Invoices.Exceptions;
 using Pottencial.Invoices.Borders.Invoices.Requests;
 using Pottencial.Invoices.Repositories.Invoices.Repositories;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Pottencial.Invoices.UseCases.Invoices.UseCases
 {
@@ -22,6 +22,20 @@ namespace Pottencial.Invoices.UseCases.Invoices.UseCases
         {
             var invoice = request.Invoice;
 
+            ValidateAndThrow(invoice);
+
+            var existing = await _repository.GetByNumber(invoice.Number);
+
+            if (existing != null)
+                throw new DuplicatedInvoiceException(existing.Number);
+
+            await _repository.Insert(invoice);
+
+            return invoice;
+        }
+
+        private static void ValidateAndThrow(Invoice invoice)
+        {
             var errors = new List<string>();
 
             if (invoice.Date != DateTime.Today)
@@ -37,10 +51,6 @@ namespace Pottencial.Invoices.UseCases.Invoices.UseCases
             if (invoice.Amount < 0)
             {
                 errors.Add("Invoice amount must be greater than or equal to 0");
-            }
-            else if (invoice.Amount != (invoice.Items ?? Enumerable.Empty<Item>()).Sum(x => x.Amount))
-            {
-                errors.Add("Invoice amount must be equal to the sum of items amount");
             }
 
             if (string.IsNullOrWhiteSpace(invoice.Customer))
@@ -108,21 +118,10 @@ namespace Pottencial.Invoices.UseCases.Invoices.UseCases
                 }
             }
 
-            if (errors.Count > 0)
+            if (errors.Any())
             {
                 throw new InvalidInvoiceException(errors);
             }
-
-            var existing = await _repository.GetByNumber(invoice.Number);
-
-            if (existing != null)
-            {
-                throw new DuplicatedInvoiceException(existing.Number);
-            }
-
-            await _repository.Insert(invoice);
-
-            return invoice;
         }
     }
 }

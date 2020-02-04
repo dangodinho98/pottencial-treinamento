@@ -20,14 +20,10 @@ namespace Pottencial.Invoices.UseCases.Invoices.UseCases
             var invoice = await _repository.GetByNumber(request.Number);
 
             if (invoice == null)
-            {
                 throw new InvoiceNotFoundException(request.Number);
-            }
 
             if (invoice.Status == Status.Cancelled)
-            {
                 throw new InvalidInvoiceOperationException(request.Number, "Cancel");
-            }
 
             invoice.Status = Status.Cancelled;
 
